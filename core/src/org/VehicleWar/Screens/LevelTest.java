@@ -34,7 +34,7 @@ import org.TMH_engine.Objects.Box2dOBJ;
 import org.TMH_engine.Objects.JSONreader;
 import org.VehicleWar.Main;
 
-public class exScreen implements Screen, InputProcessor {
+public class LevelTest implements Screen, InputProcessor {
 
     public static Game game=null;
     SpriteBatch batch;
@@ -59,9 +59,9 @@ public class exScreen implements Screen, InputProcessor {
     Sprite sprite;
 
 
-    public exScreen(final Game game){
+    public LevelTest(final Game game) {
 
-        this.game=game;
+        this.game = game;
         batch = new SpriteBatch();
         txt = new SpriteBatch();
         img = new Texture("space/space.png");
@@ -69,17 +69,16 @@ public class exScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera(50, 28);
         TextCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shape = new ShapeRenderer();
-        touch=new ShapeRenderer();
+        touch = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
-        Digitizer=new org.TMH_engine.Controlls.Screen();
-        world=new World(new Vector2(0,-1), false);
+        Digitizer = new org.TMH_engine.Controlls.Screen();
+        world = new World(new Vector2(0, -1), false);
         sprite = new Sprite(img);
-        sprite.setSize(28,28);
+        sprite.setSize(28, 28);
 
 
-
-        JSONreader Space_terrein = new JSONreader("space/space.json",world);
-       ST=Space_terrein.getBody(-25,-14,"space/space.png");
+        JSONreader Space_terrein = new JSONreader("space/space.json", world);
+        ST = Space_terrein.getBody(-25, -14, "space/space.png");
 
         CircleShape ballShape = new CircleShape();
         ballShape.setRadius(2);
@@ -94,90 +93,92 @@ public class exScreen implements Screen, InputProcessor {
         boxBodyDef.position.y = 0;
         boxBody = world.createBody(boxBodyDef);
         boxBody.createFixture(def);
-        Box2dOBJ cokolwiek = new Box2dOBJ(boxBody,"badlogic.jpg");
-
+        Box2dOBJ cokolwiek = new Box2dOBJ(boxBody, "badlogic.jpg");
 
 
         float halfWidth = 25;
         ChainShape chainShape = new ChainShape();
-        chainShape.createLoop(new Vector2[] {
+        chainShape.createLoop(new Vector2[]{
                 new Vector2(-halfWidth, -14f),
                 new Vector2(halfWidth, -14f),
                 new Vector2(halfWidth, 14),
-                new Vector2(-halfWidth, 14) });
+                new Vector2(-halfWidth, 14)});
         BodyDef chainBodyDef = new BodyDef();
         chainBodyDef.type = BodyDef.BodyType.StaticBody;
         groundBody = world.createBody(chainBodyDef);
         groundBody.createFixture(chainShape, 0);
         chainShape.dispose();
-        Box2dOBJ cokolwiek2 = new Box2dOBJ(groundBody,"badlogic.jpg");
+        Box2dOBJ cokolwiek2 = new Box2dOBJ(groundBody, "badlogic.jpg");
 
 
-
-
-        a = new Clicker(w*0.4f, h*0.7f, w/5, h/5, new Runnable() {
+        a = new Clicker(w * 0.4f, h * 0.7f, w / 5, h / 5, new Runnable() {
             @Override
             public void run() {
                 counter++;
-                game.setScreen(Main.c);
+                game.setScreen(Main.b);
             }
         });
 
-
-        b = new Clicker(w*0.75f, h*0.4f, w/5, h/5, new Runnable() {
-            @Override
-            public void run() {
-                boxBody.setAngularVelocity(20);
-            }
-        });
         Digitizer.AddClicker(a);
-        Digitizer.AddClicker(b);
     }
 
 
     @Override
     public void render(float delta) {
+
         world.step(0.1f,1,1);
         Gdx.input.setInputProcessor(this);
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.position.set(0,0,0);
-        camera.update();
 
-        {
-            batch.setProjectionMatrix(camera.combined);
-            batch.begin();
-            float x = ST.getPosition().x;
-            float y = ST.getPosition().y;
-            sprite.setPosition(x, y);
-            sprite.setOrigin(0, 0);
-            sprite.setRotation((float) Math.toDegrees(ST.getAngle()));
-            sprite.draw(batch, 1f);
-            batch.end();
-        }
-        shape.setProjectionMatrix(camera.combined);
-        Array<Body> balls = new Array<Body>(world.getBodyCount());
-        world.getBodies(balls);
-        for(int i =0; i<balls.size; i++) {
-            Body x = balls.get(i);
-            draw_geometry(shape, x);
-        }
 
+
+        /*/
+        This part needs to be replaced with following lines
+            Camera.setPosition(Car);
+            Level.dispaly(Car,camera);
+            Car.display
+         */
+//        camera.position.set(0,0,0);
+//        camera.update();
+//
+//        {
+//            batch.setProjectionMatrix(camera.combined);
+//            batch.begin();
+//            float x = ST.getPosition().x;
+//            float y = ST.getPosition().y;
+//            sprite.setPosition(x, y);
+//            sprite.setOrigin(0, 0);
+//            sprite.setRotation((float) Math.toDegrees(ST.getAngle()));
+//            sprite.draw(batch, 1f);
+//            batch.end();
+//        }
+//        shape.setProjectionMatrix(camera.combined);
+//        Array<Body> balls = new Array<Body>(world.getBodyCount());
+//        world.getBodies(balls);
+//        for(int i =0; i<balls.size; i++) {
+//            Body x = balls.get(i);
+//            draw_geometry(shape, x);
+//        }
+        /*/
+        up to this point
+         */
 
 
         //touch.begin(ShapeRenderer.ShapeType.Filled);
         touch.setProjectionMatrix(TextCam.combined);
         a.draw(touch,w,h);
-        b.draw(touch,w,h);
 
 
         txt.setProjectionMatrix(TextCam.combined);
         TextCam.update();
         txt.begin();
-        font.draw(txt, "     Another Screen", -Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-        font.draw(txt, "to LevelTest!", a.x1-w/2, a.y1-h/2);
-        font.draw(txt, "Torque!", b.x1-w/2, b.y1-h/2);
+        font.draw(txt, "     LevelTest", -Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+        font.draw(txt, "Back!", a.x1-w/2, a.y1-h/2);
         txt.end();
+
+
+
     }
 
     public void draw_geometry(ShapeRenderer shapeRenderer, Body l){
